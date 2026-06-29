@@ -58,6 +58,13 @@ async def websocket_endpoint(websocket: WebSocket, run_id: int):
     except Exception:
         pass
 
-public_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'public')
+base_dir = os.path.dirname(os.path.dirname(__file__))
+
+public_dir = os.path.join(base_dir, 'public')
 os.makedirs(public_dir, exist_ok=True)
 app.mount("/", StaticFiles(directory=public_dir, html=True), name="public")
+
+if __name__ == "__main__":
+    import uvicorn
+    port = int(os.environ.get("PORT", 8585))
+    uvicorn.run(app, host="0.0.0.0", port=port)

@@ -50,7 +50,12 @@ async def execute_job(job_id):
         except Exception:
             pass
             
-    cwd = job.get('working_directory') or None
+    cwd = job.get('working_directory')
+    if cwd:
+        cwd = cwd.strip()
+    if not cwd:
+        cwd = None
+
     command = job['command']
     shell_param = job.get('shell')
     if not shell_param:
@@ -78,7 +83,14 @@ async def execute_job(job_id):
         status = 'success' if exit_code == 0 else 'failed'
         
     except Exception as e:
-        await broadcast_log(run_id, 'stderr', f'Error starting process: {str(e)}\n')
+        error_msg = str(e)
+        if isinstance(e, FileNotFoundError):
+            if cwd and not os.path.exists(cwd):
+                error_msg = f"[Errno 2] No such file or directory: Working directory does not exist: '{cwd}'"
+            else:
+                error_msg = f"[Errno 2] No such file or directory: Shell executable not found: '{shell_param}'"
+        
+        await broadcast_log(run_id, 'stderr', f'Error starting process: {error_msg}\n')
         exit_code = -1
         status = 'failed'
         

@@ -2,8 +2,16 @@ import sqlite3
 import json
 from datetime import datetime
 import os
+import sys
+from pathlib import Path
 
-DB_PATH = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'data', 'cronfrog.db')
+# Use env var if set, otherwise default to ~/.cronfrog/data/cronfrog.db
+# This prevents uvicorn --reload from constantly restarting the server when the db changes.
+if os.environ.get('CRONFROG_DB_PATH'):
+    DB_PATH = os.environ.get('CRONFROG_DB_PATH')
+else:
+    home = str(Path.home())
+    DB_PATH = os.path.join(home, '.cronfrog', 'data', 'cronfrog.db')
 
 def get_db():
     os.makedirs(os.path.dirname(DB_PATH), exist_ok=True)
