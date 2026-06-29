@@ -5,8 +5,7 @@
 # CronFrog
 
 </div>
-CronFrog is a lightw
-eight job scheduling application featuring a backend API and an interactive web interface. It allows you to schedule, monitor, and run shell commands or scripts using cron expressions.
+CronFrog is a lightweight job scheduling application featuring a backend API and an interactive web interface. It allows you to schedule, monitor, and run shell commands or scripts using cron expressions.
 
 ---
 
