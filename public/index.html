@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CronFrog 🐸 | Job Scheduler</title>
+    <link rel="icon" type="image/png" href="/static/cronfrog_logo.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Fira+Code&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <div id="app">
+        <!-- Sidebar Navigation -->
+        <nav class="sidebar glass-panel">
+            <div class="brand">
+                <img src="/static/cronfrog_logo.png" alt="CronFrog Logo" width="40" height="40" style="animation: bounce 2s infinite;">
+                <h1>CronFrog</h1>
+            </div>
+            <ul class="nav-links" style="flex: 1;">
+                <li><a href="#dashboard" class="nav-item active" data-view="dashboard">Dashboard</a></li>
+                <li><a href="#jobs" class="nav-item" data-view="jobs">Jobs</a></li>
+            </ul>
+            <div style="margin-top: auto; padding-top: 1rem; border-top: 1px solid var(--panel-border); font-size: 0.9rem; text-align: left; padding-left: 1rem;">
+                <a href="https://github.com/shayansaha85/cronfrog" target="_blank" style="color: var(--text-secondary); text-decoration: none; display: flex; align-items: center; gap: 8px;">
+                    <svg height="16" width="16" viewBox="0 0 16 16" style="fill: currentColor; flex-shrink: 0;"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path></svg>
+                    <span>Check us out</span>
+                </a>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Dashboard View -->
+            <section id="dashboard-view" class="view active">
+                <header>
+                    <h2>Dashboard</h2>
+                    <button class="btn btn-primary" onclick="app.router.navigate('#job-edit/new')">+ New Job</button>
+                </header>
+                <div class="stats-grid" id="dashboard-stats">
+                    <!-- Stats injected via JS -->
+                </div>
+                <div class="active-jobs">
+                    <h3>Active Jobs</h3>
+                    <div class="table-container">
+                        <table class="jobs-table">
+                            <thead>
+                                <tr>
+                                    <th>Status</th>
+                                    <th>Job Name</th>
+                                    <th>Last Run</th>
+                                    <th>Next Run</th>
+                                </tr>
+                            </thead>
+                            <tbody id="dashboard-active-jobs">
+                                <!-- Injected via JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Jobs List View -->
+            <section id="jobs-view" class="view">
+                <header>
+                    <h2>All Jobs</h2>
+                    <div style="display: flex; gap: 1rem; align-items: center;">
+                        <input type="text" id="job-search" placeholder="Search jobs..." style="padding: 0.5rem 1rem; border-radius: 8px; border: 1px solid var(--panel-border); background: rgba(0,0,0,0.2); color: white; outline: none; width: 250px;">
+                        <button class="btn btn-primary" onclick="app.router.navigate('#job-edit/new')">+ New Job</button>
+                    </div>
+                </header>
+                <div class="table-container">
+                    <table class="jobs-table">
+                        <thead>
+                            <tr>
+                                <th>Status</th>
+                                <th>Name</th>
+                                <th>Cron</th>
+                                <th>Command</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="jobs-list-tbody">
+                            <!-- Injected via JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Job Edit View -->
+            <section id="job-edit-view" class="view">
+                <header>
+                    <h2 id="job-edit-title">Edit Job</h2>
+                    <button class="btn btn-secondary" onclick="app.router.navigate('#jobs')">Cancel</button>
+                </header>
+                <div class="glass-panel form-container">
+                    <form id="job-form">
+                        <input type="hidden" id="job-id">
+                        <div class="form-group">
+                            <label>Job Name</label>
+                            <input type="text" id="job-name" required placeholder="e.g. Database Backup">
+                        </div>
+                        <div class="form-group">
+                            <label>Command</label>
+                            <input type="text" id="job-command" required placeholder="e.g. ./backup.sh">
+                        </div>
+                        <div class="form-group">
+                            <label>Cron Expression</label>
+                            <div class="cron-builder glass-panel" id="cron-builder" style="padding: 1rem; margin-top: 0.5rem;">
+                                <div class="cron-tabs" style="display: flex; gap: 0.5rem; margin-bottom: 1rem; border-bottom: 1px solid var(--panel-border); padding-bottom: 0.5rem;">
+                                    <button type="button" class="cron-tab btn-small active" data-tab="custom">Custom</button>
+                                    <button type="button" class="cron-tab btn-small" data-tab="minutes">Minutes</button>
+                                    <button type="button" class="cron-tab btn-small" data-tab="hourly">Hourly</button>
+                                    <button type="button" class="cron-tab btn-small" data-tab="daily">Daily</button>
+                                    <button type="button" class="cron-tab btn-small" data-tab="weekly">Weekly</button>
+                                    <button type="button" class="cron-tab btn-small" data-tab="monthly">Monthly</button>
+                                </div>
+                                <div class="cron-tab-content active" id="cron-tab-custom">
+                                    <input type="text" id="job-cron" required placeholder="* * * * *">
+                                </div>
+                                <div class="cron-tab-content" id="cron-tab-minutes" style="display: none;">
+                                    Every <input type="number" id="cron-min-val" min="1" max="59" value="5" class="cron-num-input"> minutes
+                                </div>
+                                <div class="cron-tab-content" id="cron-tab-hourly" style="display: none;">
+                                    Every hour at minute <input type="number" id="cron-hour-min" min="0" max="59" value="0" class="cron-num-input">
+                                </div>
+                                <div class="cron-tab-content" id="cron-tab-daily" style="display: none;">
+                                    Every day at 
+                                    <input type="number" id="cron-daily-hour" min="0" max="23" value="0" class="cron-num-input"> : 
+                                    <input type="number" id="cron-daily-min" min="0" max="59" value="0" class="cron-num-input">
+                                </div>
+                                <div class="cron-tab-content" id="cron-tab-weekly" style="display: none;">
+                                    <div class="cron-days" style="margin-bottom: 0.5rem; display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                                        <label><input type="checkbox" class="cron-day-chk" value="1"> Mon</label>
+                                        <label><input type="checkbox" class="cron-day-chk" value="2"> Tue</label>
+                                        <label><input type="checkbox" class="cron-day-chk" value="3"> Wed</label>
+                                        <label><input type="checkbox" class="cron-day-chk" value="4"> Thu</label>
+                                        <label><input type="checkbox" class="cron-day-chk" value="5"> Fri</label>
+                                        <label><input type="checkbox" class="cron-day-chk" value="6"> Sat</label>
+                                        <label><input type="checkbox" class="cron-day-chk" value="0"> Sun</label>
+                                    </div>
+                                    At time
+                                    <input type="number" id="cron-weekly-hour" min="0" max="23" value="0" class="cron-num-input"> : 
+                                    <input type="number" id="cron-weekly-min" min="0" max="59" value="0" class="cron-num-input">
+                                </div>
+                                <div class="cron-tab-content" id="cron-tab-monthly" style="display: none;">
+                                    On day <input type="number" id="cron-monthly-day" min="1" max="31" value="1" class="cron-num-input"> 
+                                    at 
+                                    <input type="number" id="cron-monthly-hour" min="0" max="23" value="0" class="cron-num-input"> : 
+                                    <input type="number" id="cron-monthly-min" min="0" max="59" value="0" class="cron-num-input">
+                                </div>
+                                <div id="cron-preview" class="cron-preview" style="margin-top: 1rem; padding-top: 1rem; border-top: 1px dashed var(--panel-border);">* * * * *</div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Working Directory (Optional)</label>
+                            <input type="text" id="job-cwd" placeholder="/app/scripts">
+                        </div>
+                        <div class="form-group checkbox-group">
+                            <input type="checkbox" id="job-enabled" checked>
+                            <label for="job-enabled">Enabled</label>
+                        </div>
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary">Save Job</button>
+                        </div>
+                    </form>
+                </div>
+            </section>
+
+            <!-- Job Detail / Log Viewer View -->
+            <section id="job-detail-view" class="view">
+                <header>
+                    <h2 id="job-detail-title">Job Details</h2>
+                    <div class="header-actions">
+                        <button class="btn btn-success" id="btn-run-job">▶ Run Now</button>
+                        <button class="btn btn-secondary" onclick="app.router.navigate('#jobs')">Back</button>
+                    </div>
+                </header>
+                <div class="terminal-container glass-panel">
+                    <div class="terminal-header">
+                        <span class="status-indicator"></span> Live Output
+                    </div>
+                    <div class="terminal-body" id="terminal-output">
+                        <!-- Logs injected here -->
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Scripts -->
+    <script src="/js/api.js"></script>
+    <script src="/js/websocket.js"></script>
+    <script src="/js/components.js"></script>
+    <script src="/js/cron-builder.js"></script>
+    <script src="/js/app.js"></script>
+</body>
+</html>
