@@ -4,6 +4,14 @@
 
 # CronFrog
 
+![CronFrog](https://img.shields.io/badge/cronfrog-1.0.0-blue)
+![Python](https://img.shields.io/badge/python-3.14.5-3776AB?logo=python&logoColor=white)
+![FastAPI](https://img.shields.io/badge/FastAPI-0.138.2-009688?logo=fastapi&logoColor=white)
+![Uvicorn](https://img.shields.io/badge/Uvicorn-0.49.0-4051B5?logo=uvicorn&logoColor=white)
+![APScheduler](https://img.shields.io/badge/APScheduler-3.11.2-6A1B9A)
+![websockets](https://img.shields.io/badge/websockets-16.0-00897B)
+![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20Linux%20%7C%20macOS-blue)
+
 </div>
 CronFrog is a lightweight job scheduling application featuring a backend API and an interactive web interface. It allows you to schedule, monitor, and run shell commands or scripts using cron expressions.
 
