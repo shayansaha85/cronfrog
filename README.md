@@ -4,6 +4,7 @@
 
 # CronFrog
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-10b981.svg)](LICENSE)
 ![CronFrog](https://img.shields.io/badge/cronfrog-1.0.0-blue)
 ![Python](https://img.shields.io/badge/python-3.14.5-3776AB?logo=python&logoColor=white)
 ![FastAPI](https://img.shields.io/badge/FastAPI-0.138.2-009688?logo=fastapi&logoColor=white)
